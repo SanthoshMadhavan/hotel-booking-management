@@ -2,12 +2,16 @@ package com.santhosh.hotel_booking_management.controller;
 
 import com.santhosh.hotel_booking_management.dto.request.RoomRequestDTO;
 import com.santhosh.hotel_booking_management.dto.response.RoomResponseDTO;
+import com.santhosh.hotel_booking_management.entity.RoomType;
 import com.santhosh.hotel_booking_management.service.RoomService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -63,5 +67,30 @@ public class RoomController {
         roomService.deleteRoom(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/filter/roomType")
+    public ResponseEntity<List<RoomResponseDTO>> filterRoomsByType(@RequestParam RoomType roomType){
+        List<RoomResponseDTO> response = roomService.filterRoomsByType(roomType);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("filter/price")
+    public ResponseEntity<List<RoomResponseDTO>> filterRoomsByMaxPrice(@RequestParam BigDecimal price){
+        List<RoomResponseDTO> response = roomService.filterRoomsByMaxPrice(price);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("filter/availability")
+    public ResponseEntity<List<RoomResponseDTO>> filterRoomsByAvailability(@RequestParam Boolean available){
+          List<RoomResponseDTO> response = roomService.filterRoomsByAvailability(available);
+          return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("filter/all")
+    public ResponseEntity<Page<RoomResponseDTO>> filterRooms(@RequestParam RoomType roomType,
+               @RequestParam Boolean available, @RequestParam BigDecimal price, Pageable pageable){
+        Page<RoomResponseDTO> response = roomService.filterRooms(roomType,available,price,pageable);
+        return ResponseEntity.ok(response);
     }
 }

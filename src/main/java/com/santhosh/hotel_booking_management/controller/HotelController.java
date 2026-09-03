@@ -5,10 +5,12 @@ import com.santhosh.hotel_booking_management.dto.response.HotelResponseDTO;
 import com.santhosh.hotel_booking_management.entity.Hotel;
 import com.santhosh.hotel_booking_management.service.HotelService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @RestController
@@ -29,10 +31,22 @@ public class HotelController {
     }
 
     @GetMapping
-    public ResponseEntity<List<HotelResponseDTO>> getAllHotels() {
+    public ResponseEntity<Page<HotelResponseDTO>> getAllHotels(Pageable pageable) {
 
-        List<HotelResponseDTO> response = hotelService.getAllHotels();
+        Page<HotelResponseDTO> response = hotelService.getAllHotels(pageable);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search/location")
+    public ResponseEntity<List<HotelResponseDTO>> searchHotelsByLocation(@RequestParam String location){
+         List<HotelResponseDTO> response = hotelService.searchHotelsByLocation(location);
+         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search/name")
+    public ResponseEntity<List<HotelResponseDTO>> searchHotelsByName(@RequestParam String name){
+        List<HotelResponseDTO> response = hotelService.searchHotelsByName(name);
         return ResponseEntity.ok(response);
     }
 

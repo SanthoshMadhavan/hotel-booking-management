@@ -6,8 +6,12 @@ import com.santhosh.hotel_booking_management.entity.Hotel;
 import com.santhosh.hotel_booking_management.exception.ResourceNotFoundException;
 import com.santhosh.hotel_booking_management.repository.HotelRepository;
 import com.santhosh.hotel_booking_management.service.HotelService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,12 +37,32 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public List<HotelResponseDTO> getAllHotels() {
+    public Page<HotelResponseDTO> getAllHotels(Pageable pageable) {
 
-        return hotelRepository.findAll()
-                .stream()
-                .map(this::mapToResponseDTO)
-                .toList();
+        Page<Hotel> hotels = hotelRepository.findAll(pageable);
+        return hotels.map(this :: mapToResponseDTO);
+    }
+
+    @Override
+    public List<HotelResponseDTO> searchHotelsByLocation(String location) {
+         List<Hotel> hotels = hotelRepository.findByLocation(location);
+         List<HotelResponseDTO> responseList = new ArrayList<>();
+
+         for(Hotel hotel : hotels){
+             responseList.add(mapToResponseDTO(hotel));
+         }
+         return responseList;
+    }
+
+    @Override
+    public List<HotelResponseDTO> searchHotelsByName(String name) {
+        List<Hotel> hotels = hotelRepository.findByNameContaining(name);
+        List<HotelResponseDTO> responseList = new ArrayList<>();
+
+        for(Hotel hotel : hotels){
+            responseList.add(mapToResponseDTO(hotel));
+        }
+        return responseList;
     }
 
     @Override

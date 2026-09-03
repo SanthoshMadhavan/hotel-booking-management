@@ -4,12 +4,16 @@ import com.santhosh.hotel_booking_management.dto.request.RoomRequestDTO;
 import com.santhosh.hotel_booking_management.dto.response.RoomResponseDTO;
 import com.santhosh.hotel_booking_management.entity.Hotel;
 import com.santhosh.hotel_booking_management.entity.Room;
+import com.santhosh.hotel_booking_management.entity.RoomType;
 import com.santhosh.hotel_booking_management.exception.ResourceNotFoundException;
 import com.santhosh.hotel_booking_management.repository.HotelRepository;
 import com.santhosh.hotel_booking_management.repository.RoomRepository;
 import com.santhosh.hotel_booking_management.service.RoomService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +104,48 @@ public class RoomServiceImpl implements RoomService {
 
         roomRepository.delete(existingRoom);
     }
+
+    @Override
+    public List<RoomResponseDTO> filterRoomsByType(RoomType roomType) {
+        List<Room> rooms = roomRepository.findByRoomType(roomType);
+        List<RoomResponseDTO> responseList = new ArrayList<>();
+
+        for(Room room : rooms){
+            responseList.add(mapToResponseDTO(room));
+        }
+        return responseList;
+    }
+
+    @Override
+    public List<RoomResponseDTO> filterRoomsByMaxPrice(BigDecimal price) {
+         List<Room> rooms =  roomRepository.findByPriceLessThanEqual(price);
+         List<RoomResponseDTO> responseList = new ArrayList<>();
+
+         for(Room room : rooms){
+             responseList.add(mapToResponseDTO(room));
+         }
+         return responseList;
+    }
+
+    @Override
+    public List<RoomResponseDTO> filterRoomsByAvailability(Boolean available) {
+         List<Room> rooms = roomRepository.findByAvailable(available);
+         List<RoomResponseDTO> responseList = new ArrayList<>();
+
+         for(Room room : rooms){
+             responseList.add(mapToResponseDTO(room));
+         }
+         return responseList;
+    }
+
+    @Override
+    public Page<RoomResponseDTO> filterRooms(RoomType roomType, Boolean available,
+                                             BigDecimal price, Pageable pageable) {
+        Page<Room> rooms = roomRepository.findByRoomTypeAndAvailableAndPriceLessThanEqual(roomType,
+                available,price,pageable);
+        return rooms.map(this::mapToResponseDTO);
+    }
+
     private RoomResponseDTO mapToResponseDTO(Room room) {
 
         RoomResponseDTO responseDTO = new RoomResponseDTO();
