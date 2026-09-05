@@ -52,4 +52,20 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST
         );
     }
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(
+            AuthenticationException exception) {
+
+        ErrorResponse errorResponse =
+                new ErrorResponse(
+                        401,
+                        exception.getMessage(),
+                        null
+                );
+
+        return new ResponseEntity<>(
+                errorResponse,
+                HttpStatus.UNAUTHORIZED
+        );
+    }
 }
