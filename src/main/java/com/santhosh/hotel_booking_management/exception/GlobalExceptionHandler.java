@@ -68,4 +68,23 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED
         );
     }
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException exception){
+        ErrorResponse errorResponse = new ErrorResponse(
+                400, exception.getMessage(), null
+        );
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(ConflictException exception){
+        ErrorResponse errorResponse = new ErrorResponse(
+                409, exception.getMessage(),null
+        );
+        return new ResponseEntity<>(errorResponse,HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException exception){
+       ErrorResponse errorResponse = new ErrorResponse(403, exception.getMessage(),null);
+       return new ResponseEntity<>(errorResponse,HttpStatus.FORBIDDEN);
+    }
 }
