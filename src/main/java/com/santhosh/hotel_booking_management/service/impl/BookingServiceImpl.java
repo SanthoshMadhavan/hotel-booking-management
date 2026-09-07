@@ -13,6 +13,7 @@ import com.santhosh.hotel_booking_management.exception.ResourceNotFoundException
 import com.santhosh.hotel_booking_management.repository.BookingRepository;
 import com.santhosh.hotel_booking_management.repository.RoomRepository;
 import com.santhosh.hotel_booking_management.repository.UserRepository;
+import com.santhosh.hotel_booking_management.service.EmailService;
 import com.santhosh.hotel_booking_management.service.BookingService;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +27,14 @@ public class BookingServiceImpl implements BookingService {
         private final BookingRepository bookingRepository;
         private final RoomRepository roomRepository;
         private final UserRepository userRepository;
+        private final EmailService emailService;
 
-    public BookingServiceImpl(BookingRepository bookingRepository, RoomRepository roomRepository, UserRepository userRepository) {
+    public BookingServiceImpl(BookingRepository bookingRepository, RoomRepository roomRepository,
+                              UserRepository userRepository, EmailService emailService) {
         this.bookingRepository = bookingRepository;
         this.roomRepository = roomRepository;
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
 
@@ -76,7 +80,13 @@ public class BookingServiceImpl implements BookingService {
         booking.setCheckOutDate(checkOutDate);
         booking.setTotalPrice(totalPrice);
         booking.setStatus(BookingStatus.CONFIRMED);
+
         Booking savedBooking = bookingRepository.save(booking);
+        emailService.sendEmail(
+                user.getEmail(),
+                "Booking Confirmation",
+                "Your booking has been confirmed successfully."
+        );
 
         return mapToResponseDTO(savedBooking);
     }
@@ -124,6 +134,11 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(BookingStatus.CANCELLED);
 
         bookingRepository.save(booking);
+        emailService.sendEmail(
+                booking.getUser().getEmail(),
+                "Booking Cancellation",
+                "Your booking has been cancelled successfully."
+        );
     }
     private BookingResponseDTO mapToResponseDTO(Booking booking) {
 
