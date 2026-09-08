@@ -29,7 +29,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register","/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register","/api/auth/login",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**").permitAll()
                         // HOTEL - ADMIN ONLY
                         .requestMatchers(HttpMethod.POST, "/api/hotels")
                         .hasRole("ADMIN")
