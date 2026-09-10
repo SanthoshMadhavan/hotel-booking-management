@@ -127,7 +127,7 @@ public class BookingServiceImpl implements BookingService {
         }
         if (booking.getCheckInDate().isBefore(LocalDate.now())) {
             throw new BadRequestException(
-                    "Cannot cancel a booking after the check-in date"
+                        "Cannot cancel a booking after the check-in date"
             );
         }
 

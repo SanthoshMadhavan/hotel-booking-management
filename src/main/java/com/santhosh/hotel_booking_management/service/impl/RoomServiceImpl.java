@@ -46,16 +46,16 @@ public class RoomServiceImpl implements RoomService {
         return mapToResponseDTO(savedRoom);
     }
 
-    @Override
-    public List<RoomResponseDTO> getAllRooms() {
-       List<Room> rooms = roomRepository.findAll();
-       List<RoomResponseDTO> responseList = new ArrayList<>();
+        @Override
+        public List<RoomResponseDTO> getAllRooms() {
+           List<Room> rooms = roomRepository.findAll();
+           List<RoomResponseDTO> responseList = new ArrayList<>();
 
-       for(Room room : rooms){
-           responseList.add(mapToResponseDTO(room));
-       }
-       return responseList;
-    }
+           for(Room room : rooms){
+               responseList.add(mapToResponseDTO(room));
+           }
+           return responseList;
+        }
 
     @Override
     public RoomResponseDTO getRoomById(Long id) {

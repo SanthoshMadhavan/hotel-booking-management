@@ -96,7 +96,7 @@ public class HotelServiceImpl implements HotelService {
 
         Hotel existingHotel = hotelRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Hotel not found with id: " + id));
+                        new ResourceNotFoundException("Hotel not found with id: " + id));
 
         hotelRepository.delete(existingHotel);
     }
