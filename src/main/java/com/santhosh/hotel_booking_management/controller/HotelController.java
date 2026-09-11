@@ -5,6 +5,7 @@ import com.santhosh.hotel_booking_management.dto.response.HotelResponseDTO;
 import com.santhosh.hotel_booking_management.entity.Hotel;
 import com.santhosh.hotel_booking_management.service.HotelService;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +32,10 @@ public class HotelController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<HotelResponseDTO>> getAllHotels(Pageable pageable) {
+    public ResponseEntity<Page<HotelResponseDTO>> getAllHotels(
+            @ParameterObject Pageable pageable) {
 
         Page<HotelResponseDTO> response = hotelService.getAllHotels(pageable);
-
         return ResponseEntity.ok(response);
     }
 
